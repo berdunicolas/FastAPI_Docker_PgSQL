@@ -1,6 +1,11 @@
-from typing import Union
+from typing import List
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
+from sqlalchemy.orm import Session
+
+from database import get_db
+from models import Item
+from schemas import ItemSchema, ItemCreateSchema
 
 app = FastAPI()
 
@@ -10,6 +15,16 @@ def read_root():
     return {"Hello": "World"}
 
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+@app.get("/items")
+async def list_items(db: Session = Depends(get_db)) -> List[ItemSchema]:
+    return db.query(Item).all()
+
+@app.post("/items")
+async def create_items(payload: ItemCreateSchema, db: Session = Depends(get_db)) -> ItemSchema:
+    with db:
+        item = Item(payload.model_dump())
+
+        db.add(item)
+        db.commit()
+        db.refresh(item)
+        return item
