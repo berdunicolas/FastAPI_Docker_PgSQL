@@ -24,7 +24,7 @@ async def list_items(db: Session = Depends(get_db)) -> List[ItemSchema]:
 @app.post("/items")
 async def create_items(payload: ItemCreateSchema, db: Session = Depends(get_db)) -> ItemSchema:
     with db:
-        item = Item(payload.model_dump())
+        item = Item(**payload.model_dump())
 
         db.add(item)
         db.commit()
