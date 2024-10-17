@@ -6,6 +6,8 @@ services:
     command: ["dockerize", "-wait", "tcp://db:5432", "-timeout", "20s", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
     ports:
       - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:octavio@db:5432/fastapi_docker_pgsql
     depends_on:
       - db
 
