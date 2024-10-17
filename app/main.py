@@ -3,9 +3,11 @@ from typing import List
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
 
-from app.database import get_db
-from app.models import Item
+from app.database import get_db, engine
+from app.models import Item, Base
 from app.schemas import ItemSchema, ItemCreateSchema
+
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
