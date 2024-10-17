@@ -3,6 +3,13 @@ version: '3s'
 services:
   web:
     build: .
+
+    depends_on:
+      - db
+    
+    volumes:
+      - ./:/code:ro
+
     ports:
       - "8000:8000"
 
